@@ -19,12 +19,20 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.*
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntOffsetAsState
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Magenta
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.ui.theme.MyTheme
@@ -42,6 +50,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 // Start building your app here!
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MyApp() {
     Surface(color = MaterialTheme.colors.background) {
@@ -49,6 +58,9 @@ fun MyApp() {
     }
 }
 
+
+
+@ExperimentalAnimationApi
 @Composable
 fun CountDown(){
     Column(modifier = Modifier
@@ -56,13 +68,18 @@ fun CountDown(){
 
         var timeValue: Long = 90000
 
+
         var timeCt:String by rememberSaveable { mutableStateOf(miliToTime(timeValue))}
         var startTimer: Boolean by rememberSaveable{ mutableStateOf(false)}
         var btnText: String by rememberSaveable { mutableStateOf("START")}
 
+        var magenta by rememberSaveable {mutableStateOf(true)}
+        val color by animateColorAsState(if(magenta) Magenta else Green)
+
         var countTimer = object: CountDownTimer(timeValue,1000){
             override fun onTick(millisUntilFinished: Long) {
                 timeCt = miliToTime(millisUntilFinished)
+                magenta = !magenta
             }
 
             override fun onFinish() {
@@ -70,13 +87,15 @@ fun CountDown(){
                 btnText = "RESTART"
                 startTimer = false
 
+
             }
         }
+
 
         Row(modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text(text = timeCt, style = MaterialTheme.typography.h1)
+            Text(text = timeCt,color= color, style= MaterialTheme.typography.h1)
         }
 
         Row(modifier = Modifier
