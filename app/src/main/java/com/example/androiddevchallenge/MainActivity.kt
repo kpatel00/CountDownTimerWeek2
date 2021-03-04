@@ -16,14 +16,19 @@
 package com.example.androiddevchallenge
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,9 +45,68 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun MyApp() {
     Surface(color = MaterialTheme.colors.background) {
-        Text(text = "Ready... Set... GO!")
+        CountDown()
     }
 }
+
+@Composable
+fun CountDown(){
+    Column(modifier = Modifier
+        .padding(10.dp),horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
+
+        var timeValue: Long = 90000
+
+        var timeCt:String by rememberSaveable { mutableStateOf(miliToTime(timeValue))}
+        var startTimer: Boolean by rememberSaveable{ mutableStateOf(false)}
+        var btnText: String by rememberSaveable { mutableStateOf("START")}
+
+        var countTimer = object: CountDownTimer(timeValue,1000){
+            override fun onTick(millisUntilFinished: Long) {
+                timeCt = miliToTime(millisUntilFinished)
+            }
+
+            override fun onFinish() {
+                timeCt = "00:00"
+                btnText = "RESTART"
+                startTimer = false
+
+            }
+        }
+
+        Row(modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Text(text = timeCt, style = MaterialTheme.typography.h1)
+        }
+
+        Row(modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom){
+            Button(modifier = Modifier.padding(5.dp),onClick = {
+                if(!startTimer) {
+                    countTimer.start()
+                    startTimer = true
+                    btnText = "START"
+                }
+            }) {
+                Text(text = btnText, style = MaterialTheme.typography.h6)
+            }
+
+
+        }
+
+
+    }
+}
+
+fun miliToTime(milisec: Long): String{
+    val numberFormat = DecimalFormat("00")
+    val second: Long = (milisec/1000) % 60
+    val minute: Long = (milisec/60000) % 60
+
+    return "${numberFormat.format(minute)}:${numberFormat.format(second)}"
+}
+
 
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
 @Composable

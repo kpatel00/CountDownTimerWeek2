@@ -1,5 +1,5 @@
 # Put title of your app here
-
+CountDownTimerWeek2
 <!--- Replace <OWNER> with your Github Username and <REPOSITORY> with the name of your repository. -->
 <!--- You can find both of these in the url bar when you open your repository in github. -->
 ![Workflow result](https://github.com/<OWNER>/<REPOSITORY>/workflows/Check/badge.svg)
@@ -7,12 +7,12 @@
 
 ## :scroll: Description
 <!--- Describe your app in one or two sentences -->
-
+CountDownTimerWeek2 is app used for count down. I use state and CountDownTimer function in this app.
 
 ## :bulb: Motivation and Context
 <!--- Optionally point readers to interesting parts of your submission. -->
 <!--- What are you especially proud of? -->
-
+After building successfully this project. i learn about state in jetpack compose.
 
 ## :camera_flash: Screenshots
 <!-- You can add more screenshots here if you like -->
