@@ -19,18 +19,24 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.*
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntOffsetAsState
-import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Magenta
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,25 +64,25 @@ fun MyApp() {
     }
 }
 
-
-
 @ExperimentalAnimationApi
 @Composable
-fun CountDown(){
-    Column(modifier = Modifier
-        .padding(10.dp),horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
+fun CountDown() {
+    Column(
+        modifier = Modifier
+            .padding(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+    ) {
 
         var timeValue: Long = 90000
 
+        var timeCt by remember { mutableStateOf(miliToTime(timeValue)) }
+        var startTimer by remember { mutableStateOf(false) }
+        var btnText by remember { mutableStateOf("START") }
 
-        var timeCt:String by rememberSaveable { mutableStateOf(miliToTime(timeValue))}
-        var startTimer: Boolean by rememberSaveable{ mutableStateOf(false)}
-        var btnText: String by rememberSaveable { mutableStateOf("START")}
+        var magenta by remember { mutableStateOf(true) }
+        val color by animateColorAsState(if (magenta) Magenta else Green)
 
-        var magenta by rememberSaveable {mutableStateOf(true)}
-        val color by animateColorAsState(if(magenta) Magenta else Green)
-
-        var countTimer = object: CountDownTimer(timeValue,1000){
+        var countTimer = object : CountDownTimer(timeValue, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 timeCt = miliToTime(millisUntilFinished)
                 magenta = !magenta
@@ -86,46 +92,47 @@ fun CountDown(){
                 timeCt = "00:00"
                 btnText = "RESTART"
                 startTimer = false
-
-
             }
         }
 
-
-        Row(modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text(text = timeCt,color= color, style= MaterialTheme.typography.h1)
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = timeCt, color = color, style = MaterialTheme.typography.h1)
         }
 
-        Row(modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom){
-            Button(modifier = Modifier.padding(5.dp),onClick = {
-                if(!startTimer) {
-                    countTimer.start()
-                    startTimer = true
-                    btnText = "START"
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom
+        ) {
+            Button(
+                modifier = Modifier.padding(5.dp),
+                onClick = {
+                    if (!startTimer) {
+                        countTimer.start()
+                        startTimer = true
+                        btnText = "START"
+                    }
                 }
-            }) {
+            ) {
                 Text(text = btnText, style = MaterialTheme.typography.h6)
             }
-
-
         }
-
-
     }
 }
 
-fun miliToTime(milisec: Long): String{
+fun miliToTime(milisec: Long): String {
     val numberFormat = DecimalFormat("00")
-    val second: Long = (milisec/1000) % 60
-    val minute: Long = (milisec/60000) % 60
+    val second: Long = (milisec / 1000) % 60
+    val minute: Long = (milisec / 60000) % 60
 
     return "${numberFormat.format(minute)}:${numberFormat.format(second)}"
 }
-
 
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
 @Composable
