@@ -73,7 +73,7 @@ fun CountDown() {
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
     ) {
 
-        var timeValue: Long = 90000
+        val timeValue: Long = 90000
 
         var timeCt by remember { mutableStateOf(miliToTime(timeValue)) }
         var startTimer by remember { mutableStateOf(false) }
@@ -82,7 +82,7 @@ fun CountDown() {
         var magenta by remember { mutableStateOf(true) }
         val color by animateColorAsState(if (magenta) Magenta else Green)
 
-        var countTimer = object : CountDownTimer(timeValue, 1000) {
+        val countTimer = object : CountDownTimer(timeValue, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 timeCt = miliToTime(millisUntilFinished)
                 magenta = !magenta
